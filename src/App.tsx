@@ -1,121 +1,124 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
+import { MedicationCard } from './components/MedicationCard';
+import type { Medication } from './types';
+import { Pagination } from './components/Pagination';
+import { getMedications, getPharmaceuticalForms } from './services/api';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [medications, setMedications] = useState<Medication[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [searchInput, setSearchInput] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  const [formsMap, setFormsMap] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const loadForms = async () => {
+      try {
+        const forms = await getPharmaceuticalForms();
+        const map: Record<string, string> = {};
+        
+        forms.forEach((form) => {
+          map[form.code] = form.name;
+        });
+        
+        setFormsMap(map);
+      } catch (err) {
+        console.error('Chyba při načítání forem:', err);
+      }
+    };
+
+    loadForms();
+  }, []);
+
+  const loadMedications = async (query: string, pageNumber: number) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await getMedications(query, pageNumber);
+      
+      setMedications(response.data);
+      setTotalPages(response.meta.totalPages);
+    } catch (err) {
+      console.error(err);
+      setError('Nepodařilo se načíst data z API.');
+    } finally {
+      setIsLoading(false); 
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+      loadMedications(searchInput, 1);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const handlePrevPage = () => {
+    const newPage = Math.max(page - 1, 1)
+    setPage(newPage)
+    loadMedications(searchInput, newPage)
+  }
+
+  const handleNextPage = () => {
+    const newPage = Math.min(page + 1, totalPages)
+    setPage(newPage)
+    loadMedications(searchInput, newPage)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <h1 className="app-header">Katalog léčiv</h1>
+      
+      <div className="search-form">
+        <input 
+          type="text" 
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder="Začněte psát název léku (např. Ibalgin)..."
+          className="search-input"
+        />
+      </div>
 
-      <div className="ticks"></div>
+      {error && <div className="error-message">{error}</div>}
+      
+      {isLoading && medications.length === 0 && !error && (
+        <div className="status-message">Načítám data z API...</div>
+      )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
+      {medications.length > 0 && (
+        <div className={isLoading ? 'loading-state' : ''}>
+          <ul className="medication-grid">
+            {medications.map((med) => (
+              <MedicationCard 
+                key={med.suklCode} 
+                medication={med} 
+                formName={formsMap[med.formCode || ''] || med.formCode}
+              />
+            ))}
           </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <Pagination 
+            currentPage={page}
+            totalPages={totalPages}
+            onPrevPage={handlePrevPage}
+            onNextPage={handleNextPage}
+          />
+        </div>
+      )}
+
+      {!isLoading && medications.length === 0 && !error && (
+        <div className="status-message">Žádné léky nebyly nalezeny.</div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
