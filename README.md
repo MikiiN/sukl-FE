@@ -6,14 +6,11 @@ A web interface developed as a Web Application course project to showcase the fu
 
 This frontend application was built to provide a clean, user-friendly interface for the SÚKL (State Institute for Drug Control) API. It serves as a practical demonstration of integrating third-party/custom APIs into a modern web client, handling data fetching, and rendering dynamic content.
 
-### Key Features
-* **Search Functionality:** Easily search for medications and view detailed information.
-* **Responsive Design:** Optimized for both desktop and mobile viewing.
-
 ## Built With
 
 * **Framework:** React.js
-* **Styling:** Bootstrap
+* **Build tool:** Vite
+* **Styling:** Custom CSS
 
 ## Getting Started
 
@@ -21,11 +18,8 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-* Node.js (version `[e.g., 16.x or higher]`)
-* npm or yarn
-  ```sh
-  npm install npm@latest -g
-  ```
+* Node.js (version `[e.g., 18.x or higher]`)
+* Running instance of SÚKL API on port 3000
 
 ### Installation
 
@@ -50,7 +44,7 @@ To get a local copy up and running, follow these simple steps.
    npm run dev
    ```
 
-## 🔗 The SÚKL API
+## The SÚKL API
 
 This application depends on the SÚKL API backend. 
 * **Backend Repository:** [sukl-api](https://github.com/xpokhv00/sukl-api)
