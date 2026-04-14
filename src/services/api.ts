@@ -1,4 +1,4 @@
-import type { Medication } from '../types';
+import type { Medication } from '../types/medication';
 
 interface PaginatedResponse<T> {
   data: T[];
@@ -8,11 +8,6 @@ interface PaginatedResponse<T> {
     limit: number;
     totalPages: number;
   };
-}
-
-export interface PharmaceuticalForm {
-  code: string;
-  name: string;
 }
 
 const API_BASE_URL = 'http://localhost:3000';
@@ -40,13 +35,9 @@ export const getMedications = async (
   return response.json();
 };
 
-export const getPharmaceuticalForms = async (): Promise<PharmaceuticalForm[]> => {
-  const response = await fetch(`${API_BASE_URL}/meta/pharmaceutical-forms`);
-  
-  if (!response.ok) {
-    throw new Error('Chyba při načítání číselníku forem');
-  }
-
+export const getMedicationDetail = async (suklCode: string): Promise<Medication> => {
+  const response = await fetch(`${API_BASE_URL}/medications/${suklCode}`);
+  if (!response.ok) throw new Error('Detail léku nenalezen');
   const json = await response.json();
-  return json.data;
+  return json;
 };

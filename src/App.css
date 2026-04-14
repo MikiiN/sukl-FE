@@ -148,6 +148,49 @@ body {
   font-weight: 600;
 }
 
+.med-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px; 
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-prescription {
+  background-color: #fee2e2;
+  color: #b91c1c; 
+}
+
+.badge-otc {
+  background-color: #dcfce3;
+  color: #166534; 
+}
+
+.badge-outline {
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  background-color: transparent;
+}
+
+.badge-gray {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.med-codes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 /* states */
 .status-message {
   text-align: center;
@@ -204,4 +247,79 @@ body {
   font-weight: 500;
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+/* Medication detail */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.detail-section {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.detail-section h3 {
+  margin-top: 0;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table td {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--bg-color);
+}
+
+.info-table td:first-child {
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 40%;
+}
+
+.substance-list {
+  list-style: none;
+  padding: 0;
+}
+
+.substance-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--bg-color);
+}
+
+.main-substance {
+  color: var(--primary-color);
+}
+
+.document-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.doc-link {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  background: var(--bg-color);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+}
+
+.doc-link:hover {
+  background: var(--primary-color);
+  color: white;
 }
