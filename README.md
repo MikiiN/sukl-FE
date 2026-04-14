@@ -35,11 +35,7 @@ To get a local copy up and running, follow these simple steps.
    ```sh
    npm install
    ```
-4. Create a `.env` file in the root directory and configure your API endpoint (if applicable):
-   ```env
-   TODO
-   ```
-5. Start the development server:
+4. Start the development server:
    ```sh
    npm run dev
    ```
