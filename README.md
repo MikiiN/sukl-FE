@@ -18,7 +18,7 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-* Node.js (version `[e.g., 18.x or higher]`)
+* Node.js (version `18.x or higher`)
 * Running instance of SÚKL API on port 3000
 
 ### Installation
