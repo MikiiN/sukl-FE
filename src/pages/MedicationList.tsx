@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { MedicationCard } from '../components/MedicationCard';
 import type { Medication } from '../types/medication';
 import { Pagination } from '../components/Pagination';
-import { getMedications, getPharmaceuticalForms } from '../services/api';
+import { getMedications } from '../services/api';
 import { SearchBar } from '../components/SearchBar';
 
 export const MedicationList = () => {
@@ -12,27 +12,6 @@ export const MedicationList = () => {
   const [searchInput, setSearchInput] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-
-  const [formsMap, setFormsMap] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    const loadForms = async () => {
-      try {
-        const forms = await getPharmaceuticalForms();
-        const map: Record<string, string> = {};
-        
-        forms.forEach((form) => {
-          map[form.code] = form.name;
-        });
-        
-        setFormsMap(map);
-      } catch (err) {
-        console.error('Chyba při načítání forem:', err);
-      }
-    };
-
-    loadForms();
-  }, []);
 
   const loadMedications = async (query: string, pageNumber: number) => {
     setIsLoading(true);
@@ -94,7 +73,7 @@ export const MedicationList = () => {
               <MedicationCard 
                 key={med.suklCode} 
                 medication={med} 
-                formName={formsMap[med.formCode || ''] || med.formCode}
+                formName={med.form?.name || ''}
               />
             ))}
           </ul>

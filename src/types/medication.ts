@@ -8,6 +8,14 @@ export interface Medication {
   dispensingCategoryCode: string | null;
   registrationNumber: string | null;
   
+  form?: {
+    code: string;
+    name: string;
+  };
+  dispensingCategory?: {
+    code: string;
+    name: string;
+  };
   organization?: { name: string; countryCode: string };
   compositions?: Array<{
     substance: { name: string; innName: string | null };
