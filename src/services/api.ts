@@ -1,4 +1,4 @@
-import type { Medication } from '../types';
+import type { Medication } from '../types/medication';
 
 interface PaginatedResponse<T> {
   data: T[];
@@ -49,4 +49,11 @@ export const getPharmaceuticalForms = async (): Promise<PharmaceuticalForm[]> =>
 
   const json = await response.json();
   return json.data;
+};
+
+export const getMedicationDetail = async (suklCode: string): Promise<Medication> => {
+  const response = await fetch(`${API_BASE_URL}/medications/${suklCode}`);
+  if (!response.ok) throw new Error('Detail léku nenalezen');
+  const json = await response.json();
+  return json;
 };
