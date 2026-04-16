@@ -9,7 +9,6 @@ const navItems = [
   { to: '/prescriptions', label: 'Preskripce' },
   { to: '/organizations', label: 'Organizace' },
   { to: '/registration-changes', label: 'Reg. změny' },
-  { to: '/intermediaries', label: 'Zprostředkovatelé' },
   { to: '/statistics', label: 'Statistiky' },
 ];
 

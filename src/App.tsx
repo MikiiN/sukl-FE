@@ -12,7 +12,6 @@ import { PrescriptionStats } from './pages/PrescriptionStats';
 import { OrganizationList } from './pages/OrganizationList';
 import { OrganizationDetail } from './pages/OrganizationDetail';
 import { RegistrationChanges } from './pages/RegistrationChanges';
-import { IntermediaryList } from './pages/IntermediaryList';
 import { SupplyRiskStats } from './pages/SupplyRiskStats';
 
 function App() {
@@ -31,7 +30,6 @@ function App() {
         <Route path="/organizations" element={<OrganizationList />} />
         <Route path="/organizations/:code" element={<OrganizationDetail />} />
         <Route path="/registration-changes" element={<RegistrationChanges />} />
-        <Route path="/intermediaries" element={<IntermediaryList />} />
         <Route path="/statistics" element={<SupplyRiskStats />} />
         <Route path="/:suklCode" element={<MedicationDetail />} />
       </Routes>

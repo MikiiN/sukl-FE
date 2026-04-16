@@ -14,7 +14,6 @@ import type {
   TopMedication,
   Organization,
   RegistrationChange,
-  Intermediary,
   SupplyRisk,
 } from '../types/index';
 
@@ -297,26 +296,6 @@ export const getRegistrationChanges = async (
   if (filters.name) url.searchParams.set('name', filters.name);
   if (filters.holder) url.searchParams.set('holder', filters.holder);
   return apiFetch(url);
-};
-
-// ─── Intermediaries ───────────────────────────────────────────────────────────
-
-export const getIntermediaries = async (
-  name: string = '',
-  city: string = '',
-  page: number = 1,
-  limit: number = 20
-): Promise<PaginatedResponse<Intermediary>> => {
-  const url = new URL(`${API_BASE_URL}/intermediaries`);
-  url.searchParams.set('page', page.toString());
-  url.searchParams.set('limit', limit.toString());
-  if (name) url.searchParams.set('name', name);
-  if (city) url.searchParams.set('city', city);
-  return apiFetch(url);
-};
-
-export const getIntermediaryDetail = async (ic: string): Promise<Intermediary> => {
-  return apiFetch(`${API_BASE_URL}/intermediaries/${ic}`);
 };
 
 // ─── Statistics ───────────────────────────────────────────────────────────────
