@@ -35,4 +35,13 @@ export interface Medication {
     reason: string | null;
     isActive: boolean;
   }>;
+  priceReports?: Array<{
+    id: string;
+    period: string;
+    maxPrice: number | null;
+    reimbursement: number | null;
+    patientCopay: number | null;
+    dispensingMode: string | null;
+    reportedAt: string;
+  }>;
 }

@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getMedicationDetail } from '../services/api';
+import { getMedicationDetail, getMedicationPrescriptions } from '../services/api';
 import type { Medication } from '../types/medication';
+import type { Prescription } from '../types/index';
+import { Pagination } from '../components/Pagination';
 
 export const MedicationDetail = () => {
   const { suklCode } = useParams();
   const navigate = useNavigate();
   const [med, setMed] = useState<Medication | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [prescPage, setPrescPage] = useState(1);
+  const [prescTotalPages, setPrescTotalPages] = useState(1);
+  const [prescLoading, setPrescLoading] = useState(false);
+  const [showPrescriptions, setShowPrescriptions] = useState(false);
 
   useEffect(() => {
     if (suklCode) {
@@ -17,10 +25,27 @@ export const MedicationDetail = () => {
     }
   }, [suklCode]);
 
+  const loadPrescriptions = async (page: number) => {
+    if (!suklCode) return;
+    setPrescLoading(true);
+    try {
+      const res = await getMedicationPrescriptions(suklCode, {}, page);
+      setPrescriptions(res.data);
+      setPrescTotalPages(res.meta.totalPages);
+    } finally {
+      setPrescLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showPrescriptions && prescriptions.length === 0) loadPrescriptions(1);
+  }, [showPrescriptions]);
+
   if (loading) return <div className="status-message">Načítám detail léku...</div>;
   if (!med) return <div className="status-message">Lék nebyl nalezen.</div>;
 
   const activeDisruption = med.disruptions?.find(d => d.isActive);
+  const latestPrice = med.priceReports?.[0];
 
   return (
     <div className="app-container">
@@ -51,6 +76,14 @@ export const MedicationDetail = () => {
               <tr><td>Registrační číslo</td><td>{med.registrationNumber || 'Není uvedeno'}</td></tr>
               <tr><td>ATC skupina</td><td>{med.atcCode}</td></tr>
               <tr><td>Držitel</td><td>{med.organization?.name} ({med.organization?.countryCode})</td></tr>
+              {latestPrice && (
+                <>
+                  <tr><td>Max. cena</td><td>{latestPrice.maxPrice != null ? `${latestPrice.maxPrice} Kč` : '—'}</td></tr>
+                  <tr><td>Úhrada</td><td>{latestPrice.reimbursement != null ? `${latestPrice.reimbursement} Kč` : '—'}</td></tr>
+                  <tr><td>Doplatek pacienta</td><td>{latestPrice.patientCopay != null ? `${latestPrice.patientCopay} Kč` : '—'}</td></tr>
+                  <tr><td>Období ceny</td><td>{latestPrice.period}</td></tr>
+                </>
+              )}
             </tbody>
           </table>
         </section>
@@ -60,7 +93,7 @@ export const MedicationDetail = () => {
           <ul className="substance-list">
             {med.compositions?.map((comp, idx) => (
               <li key={idx} className={comp.isMain ? 'main-substance' : ''}>
-                <strong>{comp.substance.name}</strong> 
+                <strong>{comp.substance.name}</strong>
                 {comp.amount && <span> — {comp.amount}</span>}
                 {comp.isMain && <span className="badge badge-gray" style={{marginLeft: '0.5rem'}}>Hlavní</span>}
               </li>
@@ -81,6 +114,51 @@ export const MedicationDetail = () => {
           </div>
         </section>
       )}
+
+      <section className="detail-section" style={{marginTop: '2rem'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h3 style={{ margin: 0 }}>Statistiky preskripce</h3>
+          <button
+            className="pagination-button"
+            onClick={() => setShowPrescriptions(v => !v)}
+          >
+            {showPrescriptions ? 'Skrýt' : 'Zobrazit'}
+          </button>
+        </div>
+        {showPrescriptions && (
+          <>
+            {prescLoading && <div className="status-message">Načítám...</div>}
+            {!prescLoading && prescriptions.length > 0 && (
+              <>
+                <table className="data-table">
+                  <thead>
+                    <tr><th>Okres</th><th>Rok</th><th>Měsíc</th><th>Množství</th></tr>
+                  </thead>
+                  <tbody>
+                    {prescriptions.map(p => (
+                      <tr key={p.id}>
+                        <td>{p.districtName} <span className="text-muted">({p.districtCode})</span></td>
+                        <td>{p.year}</td>
+                        <td>{p.month}</td>
+                        <td><strong>{p.quantity.toLocaleString('cs')}</strong></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <Pagination
+                  currentPage={prescPage}
+                  totalPages={prescTotalPages}
+                  onPrevPage={() => { const p = Math.max(prescPage - 1, 1); setPrescPage(p); loadPrescriptions(p); }}
+                  onNextPage={() => { const p = Math.min(prescPage + 1, prescTotalPages); setPrescPage(p); loadPrescriptions(p); }}
+                />
+              </>
+            )}
+            {!prescLoading && prescriptions.length === 0 && (
+              <div className="status-message" style={{ padding: '1rem' }}>Žádná data preskripce.</div>
+            )}
+          </>
+        )}
+      </section>
     </div>
   );
 };
