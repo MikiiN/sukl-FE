@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   getDisruptions,
   getActiveDisruptions,
@@ -50,6 +50,8 @@ export const DisruptionList = () => {
     return () => clearTimeout(timer);
   }, [tab, atcFilter, typeFilter]);
 
+  const navigate = useNavigate();
+
   return (
     <div className="app-container">
       <h1 className="app-header">Výpadky léčiv</h1>
@@ -88,11 +90,14 @@ export const DisruptionList = () => {
             {disruptions.map(d => {
               const wr = d as DisruptionWithReplacement;
               return (
-                <li key={d.id} className="item-row info-card">
+                <li key={d.id} 
+                className="item-row info-card clickable-card"
+                onClick={() => navigate(`/${d.medication.suklCode}`)}
+                >
                   <div className="info-card-header">
-                    <Link to={`/${d.medication.suklCode}`} className="item-link">
+                    <div className="item-title" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
                       <strong>{d.medication.name}</strong>
-                    </Link>
+                    </div>
                     <div className="badge-row">
                       <span className={`badge ${d.isActive ? 'badge-prescription' : 'badge-gray'}`}>
                         {TYPE_LABELS[d.type] || d.type}
@@ -110,7 +115,11 @@ export const DisruptionList = () => {
                   {tab === 'replacement' && wr.replacement && (
                     <div className="replacement-info">
                       Náhrada:{' '}
-                      <Link to={`/${wr.replacement.suklCode}`} className="item-link">
+                      <Link 
+                        to={`/${wr.replacement.suklCode}`} 
+                        className="item-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {wr.replacement.name}
                       </Link>
                       {wr.replacementIsAlsoDisrupted && (

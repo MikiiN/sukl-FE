@@ -56,15 +56,21 @@ export const OrganizationList = () => {
         <div className={isLoading ? 'loading-state' : ''}>
           <ul className="item-list">
             {orgs.map(org => (
-              <li key={org.code} className="item-row info-card">
-                <div className="info-card-header">
-                  <Link to={`/organizations/${org.code}`} className="item-link">
-                    <strong>{org.name}</strong>
-                  </Link>
-                  {org.countryCode && <span className="badge badge-gray">{org.countryCode}</span>}
-                </div>
-                {org.address && <div className="text-muted small">{org.address}</div>}
-                {org.email && <div className="text-muted small">{org.email}</div>}
+              <li key={org.code} className="item-row info-card" style={{ padding: 0, overflow: 'hidden' }}>
+                <Link 
+                  to={`/organizations/${org.code}`} 
+                  className="clickable-card-link"
+                  style={{ display: 'block', padding: '1rem', textDecoration: 'none', color: 'inherit' }}
+                >
+                  <div className="info-card-header">
+                    <div className="item-title" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
+                      <strong>{org.name}</strong>
+                    </div>
+                    {org.countryCode && <span className="badge badge-gray">{org.countryCode}</span>}
+                  </div>
+                  {org.address && <div className="text-muted small">{org.address}</div>}
+                  {org.email && <div className="text-muted small">{org.email}</div>}
+                </Link>
               </li>
             ))}
           </ul>

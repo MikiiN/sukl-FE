@@ -68,28 +68,33 @@ export const PharmacyList = () => {
           <ul className="item-list">
             {pharmacies.map(ph => (
               <li key={ph.id} className="item-row info-card">
-                <div className="info-card-header">
-                  <Link to={`/pharmacies/${ph.id}`} className="item-link">
-                    <strong>{ph.name}</strong>
-                  </Link>
-                  <div className="badge-row">
-                    {ph.isMailOrder && <span className="badge badge-otc">Zásilková</span>}
-                    {ph.isDuty && <span className="badge badge-prescription">Pohotovost</span>}
+                  <Link to={`/pharmacies/${ph.id}`} 
+                    className="clickable-card-link"
+                    style={{ display: 'block', padding: '1rem', textDecoration: 'none', color: 'inherit' }}
+                  >
+                  <div className="info-card-header">
+                      <div className="item-title" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
+                        <strong>{ph.name}</strong>
+                      </div>
+                    <div className="badge-row">
+                      {ph.isMailOrder && <span className="badge badge-otc">Zásilková</span>}
+                      {ph.isDuty && <span className="badge badge-prescription">Pohotovost</span>}
+                    </div>
                   </div>
-                </div>
-                <div className="text-muted small">
-                  {[ph.street, ph.city, ph.postalCode].filter(Boolean).join(', ')}
-                </div>
-                {ph.phone && <div className="text-muted small">Tel: {ph.phone}</div>}
-                {ph.hours.length > 0 && (
-                  <div className="hours-row">
-                    {ph.hours.map(h => (
-                      <span key={h.id} className="hour-chip">
-                        {DAY_NAMES[h.dayOfWeek]}: {h.openTime}–{h.closeTime}
-                      </span>
-                    ))}
+                  <div className="text-muted small">
+                    {[ph.street, ph.city, ph.postalCode].filter(Boolean).join(', ')}
                   </div>
-                )}
+                  {ph.phone && <div className="text-muted small">Tel: {ph.phone}</div>}
+                  {ph.hours.length > 0 && (
+                    <div className="hours-row">
+                      {ph.hours.map(h => (
+                        <span key={h.id} className="hour-chip">
+                          {DAY_NAMES[h.dayOfWeek]}: {h.openTime}–{h.closeTime}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
               </li>
             ))}
           </ul>
