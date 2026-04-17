@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { SubstanceCard } from '../components/SubstanceCard';
 import { getSubstances } from '../services/api';
 import type { Substance } from '../types/index';
 import { Pagination } from '../components/Pagination';
@@ -51,18 +51,7 @@ export const SubstanceList = () => {
         <div className={isLoading ? 'loading-state' : ''}>
           <ul className="item-list">
             {substances.map(s => (
-              <li key={s.id} className="item-row" style={{ padding: 0, overflow: 'hidden' }}>
-                <Link 
-                  to={`/substances/${s.id}`} 
-                  className="item-link clickable-card-link"
-                  style={{ display: 'block', padding: '1rem', textDecoration: 'none', color: 'inherit' }}
-                >
-                  <strong>{s.name}</strong>
-                  {s.innName && s.innName !== s.name && (
-                    <span className="text-muted"> — INN: {s.innName}</span>
-                  )}
-                </Link>
-              </li>
+              <SubstanceCard substance={s}/>
             ))}
           </ul>
           <Pagination

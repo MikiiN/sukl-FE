@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { PharmacyCard } from '../components/PharmacyCard';
 import { getPharmacies } from '../services/api';
 import type { Pharmacy } from '../types/index';
 import { Pagination } from '../components/Pagination';
-
-const DAY_NAMES = ['', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
 
 export const PharmacyList = () => {
   const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
@@ -67,35 +65,7 @@ export const PharmacyList = () => {
         <div className={isLoading ? 'loading-state' : ''}>
           <ul className="item-list">
             {pharmacies.map(ph => (
-              <li key={ph.id} className="item-row info-card">
-                  <Link to={`/pharmacies/${ph.id}`} 
-                    className="clickable-card-link"
-                    style={{ display: 'block', padding: '1rem', textDecoration: 'none', color: 'inherit' }}
-                  >
-                  <div className="info-card-header">
-                      <div className="item-title" style={{ fontSize: '1.1rem', color: 'var(--primary-color)' }}>
-                        <strong>{ph.name}</strong>
-                      </div>
-                    <div className="badge-row">
-                      {ph.isMailOrder && <span className="badge badge-otc">Zásilková</span>}
-                      {ph.isDuty && <span className="badge badge-prescription">Pohotovost</span>}
-                    </div>
-                  </div>
-                  <div className="text-muted small">
-                    {[ph.street, ph.city, ph.postalCode].filter(Boolean).join(', ')}
-                  </div>
-                  {ph.phone && <div className="text-muted small">Tel: {ph.phone}</div>}
-                  {ph.hours.length > 0 && (
-                    <div className="hours-row">
-                      {ph.hours.map(h => (
-                        <span key={h.id} className="hour-chip">
-                          {DAY_NAMES[h.dayOfWeek]}: {h.openTime}–{h.closeTime}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </Link>
-              </li>
+              <PharmacyCard pharmacy={ph}/>
             ))}
           </ul>
           <Pagination
