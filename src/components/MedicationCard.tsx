@@ -10,6 +10,8 @@ export const MedicationCard = ({ medication, formName }: MedicationCardProps) =>
   
   const formatStrength = (strength: string | null) => {
     if (!strength) return null;
+    // Insert a space between digits and unit letters (e.g. "500mg" → "500 mg"),
+    // then restore correct capitalisation for radiopharmaceutical and IU units.
     const formatted = strength.toLowerCase().replace(/(\d)([a-zA-Z])/g, '$1 $2');
     return formatted
       .replace(/\bgbq\b/g, 'GBq')
@@ -18,6 +20,11 @@ export const MedicationCard = ({ medication, formName }: MedicationCardProps) =>
       .replace(/\bu\b/g, 'U');
   };
 
+  // Dispensing category codes are defined by SÚKL:
+  //   V — prescription-only (vázaný na předpis)
+  //   R — restricted prescription (s omezením)
+  //   O — OTC, pharmacy-only (volně v lékárně)
+  //   F — reserved product, sold outside pharmacies (vyhrazený)
   const getDispensingBadge = (code: string | null, name: string | undefined) => {
     if (!code) return null;
     

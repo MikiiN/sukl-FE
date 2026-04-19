@@ -48,6 +48,8 @@ export const PrescriptionStats = () => {
       };
       const [res, tot] = await Promise.all([
         getPrescriptions(filters, pageNumber),
+        // districtCode is intentionally excluded from the total: the total aggregates
+        // nationally (or by suklCode/atcCode/period), not per district.
         getPrescriptionsTotal({ suklCode: filters.suklCode, atcCode: filters.atcCode, year: filters.year, month: filters.month }),
       ]);
       setPrescriptions(res.data);

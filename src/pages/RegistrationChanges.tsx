@@ -9,6 +9,9 @@ const CHANGE_TYPE_LABELS: Record<string, string> = {
   CANCELLED_EU: 'Zrušena (EU)',
 };
 
+// badge-otc (green) for new registrations, badge-prescription (red) for cancellations.
+// CANCELLED_EU is a cancellation triggered by an EU-level decision rather than the national
+// authority, but carries the same clinical significance — medication no longer available.
 const CHANGE_TYPE_BADGE: Record<string, string> = {
   NEW: 'badge-otc',
   CANCELLED: 'badge-prescription',
