@@ -31,6 +31,7 @@ export const MedicationList = () => {
   };
 
   useEffect(() => {
+    // 400ms debounce — avoids firing a request on every keystroke.
     const timer = setTimeout(() => {
       setPage(1);
       loadMedications(searchInput, 1);

@@ -46,7 +46,8 @@ export const DisruptionList = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => { setPage(1); load(1); }, 300);
+    // 400ms debounce — waits for the user to stop typing before firing a request.
+    const timer = setTimeout(() => { setPage(1); load(1); }, 400);
     return () => clearTimeout(timer);
   }, [tab, atcFilter, typeFilter]);
 

@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { getSupplyRisk } from '../services/api';
 import type { SupplyRisk } from '../types/index';
 
+// Thresholds calibrated against the backend sigmoid scoring range:
+// the score is log-scaled by total prescription volume, so values above 100
+// represent high-volume ATC groups with >60% market share disrupted (high clinical impact),
+// and values above 30 indicate meaningful but partial supply risk.
 function riskClass(score: number) {
   if (score > 100) return 'risk-high';
   if (score > 30) return 'risk-medium';

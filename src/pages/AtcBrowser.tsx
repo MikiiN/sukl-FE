@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom';
 import { getAtcNodes, getAtcDetail } from '../services/api';
 import type { AtcNode, AtcNodeDetail } from '../types/index';
 
-// ATC levels: 1 char, 3 chars, 4 chars, 5 chars, 7 chars
+// ATC classification has 5 hierarchy levels defined by code length:
+//   1 char  → anatomical main group        (e.g. "A")
+//   3 chars → therapeutic subgroup         (e.g. "A10")
+//   4 chars → pharmacological subgroup     (e.g. "A10B")
+//   5 chars → chemical subgroup            (e.g. "A10BA")
+//   7 chars → individual substance (leaf)  (e.g. "A10BA02")
+// childPrefix builds a regex that matches only the direct children at the next level.
 function childPrefix(code: string): RegExp {
   const len = code.length;
   const nextLens: Record<number, number> = { 1: 3, 3: 4, 4: 5, 5: 7 };
   const nextLen = nextLens[len];
-  if (!nextLen) return /^$/; // leaf
+  if (!nextLen) return /^$/; // leaf — no children
   return new RegExp(`^${code}.{${nextLen - len}}$`);
 }
 
@@ -16,7 +22,6 @@ function isLeaf(code: string) {
   return code.length === 7;
 }
 
-// Get root nodes (single-letter codes A-Z)
 function rootNodes(all: AtcNode[]): AtcNode[] {
   return all.filter(n => n.code.length === 1).sort((a, b) => a.code.localeCompare(b.code));
 }

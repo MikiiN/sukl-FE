@@ -38,13 +38,17 @@ export const MedicationDetail = () => {
   };
 
   useEffect(() => {
+    // Prescriptions are fetched lazily on first toggle to avoid a heavy query on page load.
     if (showPrescriptions && prescriptions.length === 0) loadPrescriptions(1);
   }, [showPrescriptions]);
 
   if (loading) return <div className="status-message">Načítám detail léku...</div>;
   if (!med) return <div className="status-message">Lék nebyl nalezen.</div>;
 
+  // find() returns the first active disruption; multiple active disruptions for the
+  // same medication are not expected by the data model (one canonical active record per med).
   const activeDisruption = med.disruptions?.find(d => d.isActive);
+  // priceReports are returned by the API ordered by period desc, so index 0 is the latest.
   const latestPrice = med.priceReports?.[0];
 
   return (
@@ -55,7 +59,7 @@ export const MedicationDetail = () => {
 
       {activeDisruption && (
         <div className="error-message" style={{textAlign: 'left', marginBottom: '2rem'}}>
-          <strong>⚠️ Pozor: Výpadek v dodávkách</strong><br />
+          <strong>Pozor: Výpadek v dodávkách</strong><br />
           Typ: {activeDisruption.type} | Od: {activeDisruption.startDate ? new Date(activeDisruption.startDate).toLocaleDateString() : 'neuvedeno'}<br />
           {activeDisruption.reason && <em>Důvod: {activeDisruption.reason}</em>}
         </div>

@@ -30,7 +30,6 @@ async function apiFetch<T>(url: URL | string): Promise<T> {
   return response.json();
 }
 
-// ─── Medications ─────────────────────────────────────────────────────────────
 
 export const getMedications = async (
   query: string = '',
@@ -63,7 +62,6 @@ export const getMedicationPrescriptions = async (
   return apiFetch(url);
 };
 
-// ─── Substances ───────────────────────────────────────────────────────────────
 
 export const getSubstances = async (
   name: string = '',
@@ -92,7 +90,6 @@ export const getSubstanceMedications = async (
   return apiFetch(url);
 };
 
-// ─── Pharmacies ───────────────────────────────────────────────────────────────
 
 export const getPharmacies = async (
   filters: { name?: string; city?: string; postalCode?: string; isMailOrder?: boolean; isDuty?: boolean } = {},
@@ -114,7 +111,6 @@ export const getPharmacyDetail = async (id: string): Promise<Pharmacy> => {
   return apiFetch(`${API_BASE_URL}/pharmacies/${id}`);
 };
 
-// ─── Disruptions ──────────────────────────────────────────────────────────────
 
 type DisruptionFilters = {
   atc?: string;
@@ -178,7 +174,6 @@ export const getDisruptionHistory = async (
   return apiFetch(url);
 };
 
-// ─── ATC ─────────────────────────────────────────────────────────────────────
 
 export const getAtcNodes = async (parent?: string): Promise<{ data: AtcNode[] }> => {
   const url = new URL(`${API_BASE_URL}/atc`);
@@ -190,7 +185,6 @@ export const getAtcDetail = async (code: string): Promise<AtcNodeDetail> => {
   return apiFetch(`${API_BASE_URL}/atc/${code}`);
 };
 
-// ─── Prescriptions ────────────────────────────────────────────────────────────
 
 type PrescriptionFilters = {
   suklCode?: string;
@@ -216,6 +210,8 @@ export const getPrescriptions = async (
   return apiFetch(url);
 };
 
+// getPrescriptionsTotal omits districtCode by type — the total aggregates nationally,
+// not per district. The Omit<> enforces this at the call site.
 export const getPrescriptionsTotal = async (
   filters: Omit<PrescriptionFilters, 'districtCode'> = {}
 ): Promise<PrescriptionTotal> => {
@@ -240,7 +236,6 @@ export const getTopMedications = async (
   return apiFetch(url);
 };
 
-// ─── Organizations ────────────────────────────────────────────────────────────
 
 export const getOrganizations = async (
   name: string = '',
@@ -282,7 +277,6 @@ export const getOrganizationDisruptions = async (
   return apiFetch(url);
 };
 
-// ─── Registration Changes ─────────────────────────────────────────────────────
 
 export const getRegistrationChanges = async (
   filters: { changeType?: string; name?: string; holder?: string } = {},
@@ -298,7 +292,6 @@ export const getRegistrationChanges = async (
   return apiFetch(url);
 };
 
-// ─── Statistics ───────────────────────────────────────────────────────────────
 
 export const getSupplyRisk = async (limit: number = 20): Promise<{ data: SupplyRisk[]; meta: { limit: number; total: number } }> => {
   const url = new URL(`${API_BASE_URL}/statistics/supply-risk`);

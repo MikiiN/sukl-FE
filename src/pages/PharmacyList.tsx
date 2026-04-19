@@ -51,6 +51,8 @@ export const PharmacyList = () => {
           onChange={e => setCityInput(e.target.value)}
         />
         <label className="filter-checkbox">
+          {/* undefined = filter not applied; true = show only mail-order. false is never set
+              because the API treats absence of the param as "no filter", not as false. */}
           <input type="checkbox" checked={isMailOrder === true} onChange={e => setIsMailOrder(e.target.checked ? true : undefined)} />
           Zásilkové
         </label>
